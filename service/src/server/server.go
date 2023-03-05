@@ -2,10 +2,10 @@ package server
 
 import (
 	"fmt"
-	"github.com/snowflake-server/src/handlers"
 	"net"
 	"sync"
 
+	"github.com/snowflake-server/src/handlers"
 	"github.com/snowflake-server/src/user"
 )
 

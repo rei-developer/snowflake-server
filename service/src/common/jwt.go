@@ -2,9 +2,10 @@ package common
 
 import (
 	"errors"
+	"io/ioutil"
+
 	"github.com/dgrijalva/jwt-go"
 	"gopkg.in/yaml.v3"
-	"io/ioutil"
 )
 
 type Config struct {

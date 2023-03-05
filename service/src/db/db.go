@@ -2,10 +2,11 @@ package db
 
 import (
 	"fmt"
+	"io/ioutil"
+
 	"gopkg.in/yaml.v3"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"io/ioutil"
 )
 
 type Config struct {

@@ -2,6 +2,7 @@ package redis
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -36,8 +37,12 @@ func Get(key string) (string, error) {
 	return val, nil
 }
 
-func Set(key, value string, expiration time.Duration) error {
-	err := rdb.Set(ctx, key, value, expiration).Err()
+func Set(key string, obj interface{}, expiration time.Duration) error {
+	jsonBytes, err := json.Marshal(obj)
+	if err != nil {
+		return fmt.Errorf("failed to marshal object: %w", err)
+	}
+	err = rdb.Set(ctx, key, string(jsonBytes), expiration).Err()
 	if err != nil {
 		return fmt.Errorf("failed to set value for key %s: %w", key, err)
 	}

@@ -47,12 +47,14 @@ func HandleLoginVerification(
 	}
 
 	newUser := &user.User{
-		Index: *nextUserIndex,
-		ID:    uint(userId),
-		Conn:  conn,
+		Model: common.Model{
+			Index: *nextUserIndex,
+			ID:    uint(userId),
+		},
 		Type:  "apple",
 		UID:   "dddddd",
 		Email: "지랄하네",
+		Conn:  conn,
 	}
 	if err := user.UpsertUser(newUser); err != nil {
 		fmt.Printf("Failed to create user: %v", err)
