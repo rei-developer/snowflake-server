@@ -7,6 +7,10 @@ map:
 service:
   port: ":10004"
 
+jwt:
+  defaultStrategy: "custom-auth"
+  secretKey: "apple"
+
 db:
   host: localhost
   username: root

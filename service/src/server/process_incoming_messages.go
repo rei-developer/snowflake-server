@@ -10,7 +10,7 @@ func (s *Server) processIncomingMessages(conn net.Conn, incoming chan Message, o
 	for msg := range incoming {
 		switch msg.Type {
 		case loginVerification:
-			handlers.HandleLoginVerification(conn, msg.Payload, s.users, &s.nextUserIndex, outgoing, &s.mu)
+			handlers.HandleLoginVerification(conn, msg.Payload, s.users, &s.nextUserIndex, &s.mu)
 		case getUserByID:
 			handlers.HandleGetUserByID(msg.Payload, s.users, outgoing, &s.mu)
 		case hello:

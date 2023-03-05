@@ -3,14 +3,15 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"github.com/snowflake-server/src/db"
-	"github.com/snowflake-server/src/server"
-	User "github.com/snowflake-server/src/user"
-	"gopkg.in/yaml.v3"
+	"github.com/snowflake-server/src/redis"
 	"io/ioutil"
 	"log"
 	"os"
 	"strings"
+
+	"github.com/snowflake-server/src/db"
+	"github.com/snowflake-server/src/server"
+	"gopkg.in/yaml.v3"
 )
 
 type Config struct {
@@ -57,13 +58,10 @@ func main() {
 		panic(err)
 	}
 
-	// Get a user by ID
-	user, err := User.GetUserByID(1)
+	err = redis.Connect()
 	if err != nil {
 		panic(err)
 	}
-
-	fmt.Printf("User %d: %s (%s)\n", user.ID, user.UID, user.Email)
 
 	reader := bufio.NewReader(os.Stdin)
 	for {

@@ -3,6 +3,7 @@ go 1.19
 use (
 	src/common
 	src/db
+	src/redis
 	src/server
 	src/user
 	src/response
