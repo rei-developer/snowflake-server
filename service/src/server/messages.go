@@ -8,7 +8,8 @@ import (
 )
 
 const (
-	hello MessageType = iota
+	loginVerification MessageType = iota
+	hello
 	getUserByID
 )
 

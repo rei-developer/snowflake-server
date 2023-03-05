@@ -2,6 +2,7 @@ package server
 
 import (
 	"fmt"
+	"github.com/snowflake-server/src/handlers"
 	"net"
 	"sync"
 
@@ -9,9 +10,10 @@ import (
 )
 
 type Server struct {
-	listener net.Listener
-	users    map[uint32]*user.User
-	mu       sync.Mutex
+	listener      net.Listener
+	users         map[uint32]*user.User
+	nextUserIndex uint32
+	mu            sync.Mutex
 }
 
 func NewServer(port string) (*Server, error) {
@@ -21,8 +23,9 @@ func NewServer(port string) (*Server, error) {
 	}
 
 	return &Server{
-		listener: l,
-		users:    make(map[uint32]*user.User),
+		listener:      l,
+		users:         make(map[uint32]*user.User),
+		nextUserIndex: 1,
 	}, nil
 }
 
@@ -47,6 +50,7 @@ func (s *Server) handleConnection(conn net.Conn) {
 		if err != nil {
 
 		}
+		handlers.HandleUserDisconnect(conn, s.users, &s.mu)
 	}(conn)
 
 	incoming := make(chan Message)

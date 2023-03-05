@@ -9,7 +9,7 @@ import (
 	"github.com/snowflake-server/src/user"
 )
 
-func HandleGetUserByID(payload []byte, mu *sync.Mutex, users map[uint32]*user.User, outgoing chan []byte) {
+func HandleGetUserByID(payload []byte, users map[uint32]*user.User, outgoing chan []byte, mu *sync.Mutex) {
 	defer mu.Unlock()
 
 	// parse the user ID from the payload

@@ -3,6 +3,7 @@ package user
 import (
 	"errors"
 	"fmt"
+	"net"
 	"time"
 
 	"github.com/snowflake-server/src/db"
@@ -10,6 +11,7 @@ import (
 )
 
 type User struct {
+	Index   uint32     `gorm:"-"`
 	ID      uint       `json:"id" gorm:"primaryKey"`
 	Type    string     `json:"type"`
 	UID     string     `json:"uid"`
@@ -17,6 +19,7 @@ type User struct {
 	Created time.Time  `json:"created"`
 	Updated time.Time  `json:"updated"`
 	Deleted *time.Time `json:"deleted"`
+	Conn    net.Conn   `gorm:"-"`
 }
 
 func CreateUser(user *User) error {
