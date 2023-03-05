@@ -1,0 +1,16 @@
+chat:
+  port: ":10002"
+
+map:
+  port: ":10003"
+
+service:
+  port: ":10004"
+
+db:
+  host: localhost
+  username: root
+  password: Vika881843905#$
+  dbname: snowflake
+  maxOpenConns: 10
+  SetMaxIdleConns: 5

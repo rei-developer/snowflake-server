@@ -1,0 +1,11 @@
+go 1.19
+
+use (
+	src/common
+	src/db
+	src/server
+	src/user
+	src/response
+	src/handlers
+	.
+)
