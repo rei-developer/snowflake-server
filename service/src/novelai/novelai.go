@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/snowflake-server/src/common"
+	"github.com/snowflake-server/src/generated_image"
 	"gopkg.in/yaml.v3"
 	"io"
 	"io/ioutil"
@@ -43,6 +44,16 @@ var accessToken string = ""
 func GenerateImage(input string) string {
 	prompt, hash := common.GetPromptHash(input)
 
+	image, err := generated_image.GetGeneratedImageByHash(hash)
+	if err != nil {
+		println(err.Error())
+		return ""
+	}
+	if image.ID > 0 {
+		println("이미 있군요...")
+		return image.Hash
+	}
+
 	request := ImageRequest{
 		Input: prompt,
 		Model: "safe-diffusion",
@@ -76,6 +87,15 @@ func GenerateImage(input string) string {
 		if err != nil {
 			println(err.Error())
 			return ""
+		}
+
+		newImage := &generated_image.GeneratedImage{
+			UserID: 0,
+			Prompt: prompt,
+			Hash:   hash,
+		}
+		if err := generated_image.UpsertGeneratedImage(newImage); err != nil {
+			fmt.Printf("Failed to create user: %v", err)
 		}
 
 		return hash

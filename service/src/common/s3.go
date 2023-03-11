@@ -85,7 +85,7 @@ func UploadToS3(image string, keyName string) error {
 		return fmt.Errorf("error uploading image to S3: %v", err)
 	}
 
-	print("https://yukki-studio.s3.us-west-002.backblazeb2.com/" + keyName + ".webp")
+	println("https://f002.backblazeb2.com/file/" + config.S3.BucketName + "/" + keyName + ".webp")
 
 	return nil
 }

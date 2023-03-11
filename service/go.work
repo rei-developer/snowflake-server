@@ -10,4 +10,5 @@ use (
 	src/handlers
 	.
 	src/novelai
+	src/generated_image
 )
