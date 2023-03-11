@@ -27,5 +27,8 @@ s3:
   bucketName: "yukki-studio"
   keyNamePrefix: "snowflake/generated-ai-image/"
 
+openai:
+  secretKey: "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"
+
 novelai:
-  apiKey: UCDcf6w9i_FVWKy5nRCk7gatoIfJaXX2LIrj2ScTZap8hFYFqko8ZqajwrRg5M4H
+  apiKey: "UCDcf6w9i_FVWKy5nRCk7gatoIfJaXX2LIrj2ScTZap8hFYFqko8ZqajwrRg5M4H"
