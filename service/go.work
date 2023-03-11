@@ -9,4 +9,5 @@ use (
 	src/response
 	src/handlers
 	.
+	src/novelai
 )

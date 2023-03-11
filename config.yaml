@@ -18,3 +18,14 @@ db:
   dbname: snowflake
   maxOpenConns: 10
   SetMaxIdleConns: 5
+
+s3:
+  accessKeyId: "002a0da47845c670000000003"
+  secretAccessKey: "K002Gga7fxkL6xNwvSNZbT+367HKlW0"
+  region: "us-west-002"
+  endpoint: "s3.us-west-002.backblazeb2.com"
+  bucketName: "yukki-studio"
+  keyNamePrefix: "snowflake/generated-ai-image/"
+
+novelai:
+  apiKey: UCDcf6w9i_FVWKy5nRCk7gatoIfJaXX2LIrj2ScTZap8hFYFqko8ZqajwrRg5M4H

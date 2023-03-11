@@ -3,15 +3,15 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"github.com/snowflake-server/src/db"
+	"github.com/snowflake-server/src/novelai"
 	"github.com/snowflake-server/src/redis"
+	"github.com/snowflake-server/src/server"
+	"gopkg.in/yaml.v3"
 	"io/ioutil"
 	"log"
 	"os"
 	"strings"
-
-	"github.com/snowflake-server/src/db"
-	"github.com/snowflake-server/src/server"
-	"gopkg.in/yaml.v3"
 )
 
 type Config struct {
@@ -30,6 +30,8 @@ func init() {
 }
 
 func main() {
+	go novelai.GenerateImage("{masterpiece}, illustration, high quality, beatiful detailed eyes, beautiful detailed sky, beautiful detailed water, dramatic light, dramatic angle, 1girl, sailor dress, full body,grandient eye,hoshikawa sara,nijisanji,bare shoulder,bra strap,choker,collarbone,hair ribbon,long hair,white tank top,red eyes, yellow eyes,yellow hair,orange ribbon,white clothes, long sleeves,white jacket,x hair ornament,crop top,side ponytail,heterochromia , smile, one eye closed, peace sign, tongue out, duck sitting")
+
 	configFile, err := ioutil.ReadFile("./config.yaml")
 	if err != nil {
 		log.Fatalf("Failed to read config file: %v", err)
