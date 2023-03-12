@@ -8,6 +8,8 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 )
@@ -37,7 +39,7 @@ type chatResponse struct {
 }
 
 func SendChatRequest(content string) (string, error) {
-	config, err := loadConfig("./config.yaml")
+	config, err := loadConfig()
 	if err != nil {
 		panic(err)
 	}
@@ -99,14 +101,19 @@ func SendChatRequest(content string) (string, error) {
 	return strings.TrimSpace(response.Choices[0].Message.Content), nil
 }
 
-func loadConfig(filename string) (*openAiConfig, error) {
-	// Read the YAML file
-	yamlFile, err := ioutil.ReadFile(filename)
+func loadConfig() (*openAiConfig, error) {
+	rootPath, err := os.Getwd()
 	if err != nil {
 		return nil, err
 	}
 
-	// Parse the YAML into a Config struct
+	configPath := filepath.Join(rootPath, "config.yaml")
+
+	yamlFile, err := ioutil.ReadFile(configPath)
+	if err != nil {
+		return nil, err
+	}
+
 	var config openAiConfig
 	err = yaml.Unmarshal(yamlFile, &config)
 	if err != nil {

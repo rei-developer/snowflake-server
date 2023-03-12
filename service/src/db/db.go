@@ -3,13 +3,15 @@ package db
 import (
 	"fmt"
 	"io/ioutil"
+	"os"
+	"path/filepath"
 
 	"gopkg.in/yaml.v3"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
-type Config struct {
+type dbConfig struct {
 	DB struct {
 		Host         string `yaml:"host"`
 		Username     string `yaml:"username"`
@@ -23,20 +25,11 @@ type Config struct {
 var DB *gorm.DB
 
 func Connect() error {
-	// Read the configuration file
-	configData, err := ioutil.ReadFile("./config.yaml")
+	config, err := loadConfig()
 	if err != nil {
-		return fmt.Errorf("failed to read configuration file: %w", err)
+		panic(err)
 	}
 
-	// Parse the configuration
-	var config Config
-	err = yaml.Unmarshal(configData, &config)
-	if err != nil {
-		return fmt.Errorf("failed to parse configuration: %w", err)
-	}
-
-	// Set up the database connection
 	dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", config.DB.Username, config.DB.Password, config.DB.Host, config.DB.DBName)
 
 	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
@@ -44,22 +37,40 @@ func Connect() error {
 		return fmt.Errorf("failed to connect to database: %w", err)
 	}
 
-	// Set the maximum number of open connections
 	sqlDB, err := DB.DB()
 	if err != nil {
 		return fmt.Errorf("failed to get sql.DB instance: %w", err)
 	}
 
 	sqlDB.SetMaxOpenConns(config.DB.MaxOpenConns)
-
-	// Set the maximum number of idle connections
 	sqlDB.SetMaxIdleConns(config.DB.MaxIdleConns)
 
-	// Test the connection
 	err = sqlDB.Ping()
 	if err != nil {
 		return fmt.Errorf("failed to ping database: %w", err)
 	}
 
 	return nil
+}
+
+func loadConfig() (*dbConfig, error) {
+	rootPath, err := os.Getwd()
+	if err != nil {
+		return nil, err
+	}
+
+	configPath := filepath.Join(rootPath, "config.yaml")
+
+	yamlFile, err := ioutil.ReadFile(configPath)
+	if err != nil {
+		return nil, err
+	}
+
+	var config dbConfig
+	err = yaml.Unmarshal(yamlFile, &config)
+	if err != nil {
+		return nil, err
+	}
+
+	return &config, nil
 }
