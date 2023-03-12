@@ -5,8 +5,5 @@ export class VerifyDto {
   uid: string;
 
   @ApiProperty()
-  idToken: string;
-
-  @ApiProperty()
   customToken: string;
 }
