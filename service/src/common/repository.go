@@ -49,6 +49,39 @@ func (m *Model) GetByID(id uint, prefix string, v interface{}) error {
 	return nil
 }
 
+func (m *Model) GetByColumn(column string, value interface{}, prefix string, v interface{}) error {
+	key := fmt.Sprintf("%s%s_%v", prefix, column, value)
+
+	// Try to get the object from Redis cache
+	jsonStr, err := redis.Get(key)
+	if err == nil {
+		if err := json.Unmarshal([]byte(jsonStr), v); err == nil {
+			return nil
+		}
+	}
+
+	// If the object is not in the Redis cache, get it from the database
+	query := fmt.Sprintf("%s = ?", column)
+	err = db.DB.Where(query, value).First(v).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil
+	}
+	if err != nil {
+		return fmt.Errorf("failed to get object: %w", err)
+	}
+
+	// Cache the object in Redis
+	jsonBytes, err := json.Marshal(v)
+	if err != nil {
+		return fmt.Errorf("failed to marshal object: %w", err)
+	}
+	if err := redis.Set(key, string(jsonBytes), time.Hour); err != nil {
+		fmt.Printf("Failed to cache object %v in Redis: %v", value, err)
+	}
+
+	return nil
+}
+
 func (m *Model) UpdateFields(existingObj interface{}, newObj interface{}) {
 	vExistingObj := reflect.ValueOf(existingObj).Elem()
 	vNewObj := reflect.ValueOf(newObj).Elem()

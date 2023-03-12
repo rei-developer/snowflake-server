@@ -3,15 +3,15 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"github.com/snowflake-server/src/db"
+	"github.com/snowflake-server/src/openai"
 	"github.com/snowflake-server/src/redis"
+	"github.com/snowflake-server/src/server"
+	"gopkg.in/yaml.v3"
 	"io/ioutil"
 	"log"
 	"os"
 	"strings"
-
-	"github.com/snowflake-server/src/db"
-	"github.com/snowflake-server/src/server"
-	"gopkg.in/yaml.v3"
 )
 
 type Config struct {
@@ -24,6 +24,7 @@ var validCommands map[string]string
 
 func init() {
 	validCommands = map[string]string{
+		"talk": "Talk to ChatGPT AI.",
 		"help": "Display this help message.",
 		"exit": "Exit the program.",
 	}
@@ -83,7 +84,36 @@ func main() {
 }
 
 func handleCommand(cmd string, validCommands map[string]string, reader *bufio.Reader) error {
-	switch cmd {
+	parts := strings.SplitN(cmd, " ", 2)
+	command := parts[0]
+	content := ""
+	if len(parts) > 1 {
+		content = parts[1]
+	}
+
+	switch command {
+	case "talk":
+		resultChan := make(chan string)
+		errChan := make(chan error)
+
+		go func() {
+			println("Me : " + content)
+			result, err := openai.SendChatRequest(content)
+			if err != nil {
+				errChan <- err
+			} else {
+				resultChan <- result
+			}
+		}()
+
+		select {
+		case result := <-resultChan:
+			fmt.Println("AI: " + result)
+		case err := <-errChan:
+			fmt.Println(err.Error())
+		}
+
+		return nil
 	case "help":
 		fmt.Println("Valid commands:")
 		for cmd, usage := range validCommands {

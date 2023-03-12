@@ -1,6 +1,7 @@
 go 1.19
 
 use (
+	.
 	src/common
 	src/db
 	src/redis
@@ -8,5 +9,7 @@ use (
 	src/user
 	src/response
 	src/handlers
-	.
+	src/openai
+	src/novelai
+	src/generated_image
 )
