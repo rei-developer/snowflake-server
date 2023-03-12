@@ -26,7 +26,7 @@ export class AuthService {
     try {
       const { uid } = await this.firebaseAuthStrategy.validate(idToken);
       const customToken = this.jwtService.sign({ uid });
-      return { uid, idToken, customToken };
+      return { uid, customToken };
     } catch (err) {
       throw new ForbiddenException(ExceptionErrorMessage.DOES_NOT_EXIST);
     }
@@ -35,7 +35,9 @@ export class AuthService {
   async verifyCustom({
     authModel: { idToken: token },
   }: AuthHeaderDto): Promise<VerifyCustomDto> {
-    return await this.authStrategy.validate(token);
+    const { uid } = await this.authStrategy.validate(token);
+    const user = await this.userRepository.readUserByUId(uid);
+    return new VerifyCustomDto(uid, !!user);
   }
 
   async register({

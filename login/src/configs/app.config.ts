@@ -17,8 +17,8 @@ export const appConfig = {
     limit: 100,
   },
   jwt: {
-    defaultStrategy: 'custom-auth',
-    expiresIn: '1d',
+    defaultStrategy: 'snowflake',
+    expiresIn: '7d',
   },
   log: {
     level: LogLevel.DEBUG,
