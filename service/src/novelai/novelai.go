@@ -61,6 +61,7 @@ func GenerateImage(input string) string {
 			"width":         512,
 			"height":        768,
 			"scale":         11,
+			"seed":          3698792792,
 			"sampler":       "k_euler_ancestral",
 			"steps":         28,
 			"n_samples":     1,

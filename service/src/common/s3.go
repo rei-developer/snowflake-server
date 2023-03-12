@@ -1,19 +1,7 @@
 package common
 
 import (
-	"bytes"
-	"context"
-	"encoding/base64"
-	"fmt"
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/credentials"
-	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/s3"
-	"github.com/chai2010/webp"
-	"gopkg.in/yaml.v3"
 	_ "image"
-	"image/png"
-	"io/ioutil"
 	_ "os"
 )
 
@@ -28,64 +16,66 @@ type s3Config struct {
 }
 
 func UploadToS3(image string, keyName string) error {
-	// Read the configuration file
-	configData, err := ioutil.ReadFile("./config.yaml")
-	if err != nil {
-		return err
-	}
+	/*
 
-	// Parse the configuration
-	var config s3Config
-	err = yaml.Unmarshal(configData, &config)
-	if err != nil {
-		return err
-	}
+		// Read the configuration file
+		configData, err := ioutil.ReadFile("./config.yaml")
+		if err != nil {
+			return err
+		}
 
-	// Decode the base64 encoded image to a PNG image
-	pngData, err := base64.StdEncoding.DecodeString(image)
-	if err != nil {
-		return fmt.Errorf("error decoding image data: %v", err)
-	}
+		// Parse the configuration
+		var config s3Config
+		err = yaml.Unmarshal(configData, &config)
+		if err != nil {
+			return err
+		}
 
-	// Convert the PNG image data to an image.Image object
-	img, err := png.Decode(bytes.NewReader(pngData))
-	if err != nil {
-		return fmt.Errorf("error decoding png image: %v", err)
-	}
+		// Decode the base64 encoded image to a PNG image
+		pngData, err := base64.StdEncoding.DecodeString(image)
+		if err != nil {
+			return fmt.Errorf("error decoding image data: %v", err)
+		}
 
-	// Convert the image to WebP format
-	var webpData bytes.Buffer
-	options := webp.Options{Quality: 100}
-	err = webp.Encode(&webpData, img, &options)
-	if err != nil {
-		return fmt.Errorf("error encoding webp image: %v", err)
-	}
+		// Convert the PNG image data to an image.Image object
+		img, err := png.Decode(bytes.NewReader(pngData))
+		if err != nil {
+			return fmt.Errorf("error decoding png image: %v", err)
+		}
 
-	// Upload the WebP data to S3
-	sess, err := session.NewSession(&aws.Config{
-		Region:      aws.String(config.S3.Region),
-		Credentials: credentials.NewStaticCredentials(config.S3.AccessKeyId, config.S3.SecretAccessKey, ""),
-		Endpoint:    aws.String(config.S3.Endpoint),
-	})
-	if err != nil {
-		return fmt.Errorf("error creating session: %v", err)
-	}
+		// Convert the image to WebP format
+		var webpData bytes.Buffer
+		options := webp.Options{Quality: 100}
+		err = webp.Encode(&webpData, img, &options)
+		if err != nil {
+			return fmt.Errorf("error encoding webp image: %v", err)
+		}
 
-	s3Client := s3.New(sess)
+		// Upload the WebP data to S3
+		sess, err := session.NewSession(&aws.Config{
+			Region:      aws.String(config.S3.Region),
+			Credentials: credentials.NewStaticCredentials(config.S3.AccessKeyId, config.S3.SecretAccessKey, ""),
+			Endpoint:    aws.String(config.S3.Endpoint),
+		})
+		if err != nil {
+			return fmt.Errorf("error creating session: %v", err)
+		}
 
-	ctx := context.Background()
+		s3Client := s3.New(sess)
 
-	_, err = s3Client.PutObjectWithContext(ctx, &s3.PutObjectInput{
-		Bucket:      aws.String(config.S3.BucketName),
-		Key:         aws.String(keyName + ".webp"),
-		Body:        bytes.NewReader(webpData.Bytes()),
-		ContentType: aws.String("image/webp"),
-	})
-	if err != nil {
-		return fmt.Errorf("error uploading image to S3: %v", err)
-	}
+		ctx := context.Background()
 
-	println("https://f002.backblazeb2.com/file/" + config.S3.BucketName + "/" + keyName + ".webp")
+		_, err = s3Client.PutObjectWithContext(ctx, &s3.PutObjectInput{
+			Bucket:      aws.String(config.S3.BucketName),
+			Key:         aws.String(keyName + ".webp"),
+			Body:        bytes.NewReader(webpData.Bytes()),
+			ContentType: aws.String("image/webp"),
+		})
+		if err != nil {
+			return fmt.Errorf("error uploading image to S3: %v", err)
+		}
 
+		println("https://f002.backblazeb2.com/file/" + config.S3.BucketName + "/" + keyName + ".webp")
+	*/
 	return nil
 }
