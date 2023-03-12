@@ -11,10 +11,11 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"path/filepath"
 	"strings"
 )
 
-type Config struct {
+type serverConfig struct {
 	Service struct {
 		Port string `yaml:"port"`
 	} `yaml:"service"`
@@ -31,15 +32,9 @@ func init() {
 }
 
 func main() {
-	configFile, err := ioutil.ReadFile("./config.yaml")
+	config, err := loadConfig()
 	if err != nil {
-		log.Fatalf("Failed to read config file: %v", err)
-	}
-
-	var config Config
-	err = yaml.Unmarshal(configFile, &config)
-	if err != nil {
-		log.Fatalf("Failed to parse config file: %v", err)
+		panic(err)
 	}
 
 	s, err := server.NewServer(config.Service.Port)
@@ -81,6 +76,28 @@ func main() {
 			}
 		}
 	}
+}
+
+func loadConfig() (*serverConfig, error) {
+	rootPath, err := os.Getwd()
+	if err != nil {
+		return nil, err
+	}
+
+	configPath := filepath.Join(rootPath, "config.yaml")
+
+	yamlFile, err := ioutil.ReadFile(configPath)
+	if err != nil {
+		return nil, err
+	}
+
+	var config serverConfig
+	err = yaml.Unmarshal(yamlFile, &config)
+	if err != nil {
+		return nil, err
+	}
+
+	return &config, nil
 }
 
 func handleCommand(cmd string, validCommands map[string]string, reader *bufio.Reader) error {

@@ -3,12 +3,14 @@ package common
 import (
 	"errors"
 	"io/ioutil"
+	"os"
+	"path/filepath"
 
 	"github.com/dgrijalva/jwt-go"
 	"gopkg.in/yaml.v3"
 )
 
-type Config struct {
+type jwtConfig struct {
 	JWT struct {
 		DefaultStrategy string `yaml:"defaultStrategy"`
 		SecretKey       string `yaml:"secretKey"`
@@ -16,17 +18,9 @@ type Config struct {
 }
 
 func VerifyToken(tokenString string) (*jwt.StandardClaims, error) {
-	// Read the configuration file
-	configData, err := ioutil.ReadFile("./config.yaml")
+	config, err := loadConfig()
 	if err != nil {
-		return nil, err
-	}
-
-	// Parse the configuration
-	var config Config
-	err = yaml.Unmarshal(configData, &config)
-	if err != nil {
-		return nil, err
+		panic(err)
 	}
 
 	secretKey := []byte(config.JWT.SecretKey)
@@ -48,4 +42,26 @@ func VerifyToken(tokenString string) (*jwt.StandardClaims, error) {
 	}
 
 	return claims, nil
+}
+
+func loadConfig() (*jwtConfig, error) {
+	rootPath, err := os.Getwd()
+	if err != nil {
+		return nil, err
+	}
+
+	configPath := filepath.Join(rootPath, "config.yaml")
+
+	yamlFile, err := ioutil.ReadFile(configPath)
+	if err != nil {
+		return nil, err
+	}
+
+	var config jwtConfig
+	err = yaml.Unmarshal(yamlFile, &config)
+	if err != nil {
+		return nil, err
+	}
+
+	return &config, nil
 }

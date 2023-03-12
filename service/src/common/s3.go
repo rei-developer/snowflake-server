@@ -19,7 +19,7 @@ func UploadToS3(image string, keyName string) error {
 	/*
 
 		// Read the configuration file
-		configData, err := ioutil.ReadFile("./config.yaml")
+		configData, err := ioutil.ReadFile("../config.yaml")
 		if err != nil {
 			return err
 		}

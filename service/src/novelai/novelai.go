@@ -13,6 +13,7 @@ import (
 	"net/http"
 	"os"
 	"path"
+	"path/filepath"
 	"regexp"
 )
 
@@ -107,14 +108,19 @@ func GenerateImage(input string) string {
 	return ""
 }
 
-func loadConfig(filename string) (*novelAiConfig, error) {
-	// Read the YAML file
-	yamlFile, err := ioutil.ReadFile(filename)
+func loadConfig() (*novelAiConfig, error) {
+	rootPath, err := os.Getwd()
 	if err != nil {
 		return nil, err
 	}
 
-	// Parse the YAML into a Config struct
+	configPath := filepath.Join(rootPath, "config.yaml")
+
+	yamlFile, err := ioutil.ReadFile(configPath)
+	if err != nil {
+		return nil, err
+	}
+
 	var config novelAiConfig
 	err = yaml.Unmarshal(yamlFile, &config)
 	if err != nil {
@@ -125,7 +131,7 @@ func loadConfig(filename string) (*novelAiConfig, error) {
 }
 
 func getAuthToken() (*novelAiConfig, string, error) {
-	config, err := loadConfig("./config.yaml")
+	config, err := loadConfig()
 	if err != nil {
 		panic(err)
 	}
