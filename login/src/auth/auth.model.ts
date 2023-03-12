@@ -1,9 +1,11 @@
 export enum AuthType {
   GOOGLE = 'google',
   APPLE = 'apple',
+  FACEBOOK = 'facebook',
+  TWITTER = 'twitter',
 }
 
-export const CustomAuthScheme = 'snowflake';
+export const CustomAuthScheme = 'local';
 
 export interface AuthModel {
   authType: AuthType;
