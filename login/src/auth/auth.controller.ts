@@ -6,16 +6,16 @@ import {
   Get,
   Post,
   Delete,
-  Query,
   Body,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { FirebaseAuthGuard } from '#firebase/firebase-auth.guard';
 import { JwtAuthGuard } from './guard/jwt-auth.guard';
 import { RequestHeader } from '#common/decorator/request-header.decorator';
-import { AuthHeaderDto } from './dto/request/auth-header.dto';
-import { VerifyDto } from './dto/response/verify.dto';
-import { VerifyCustomDto } from './dto/response/verify-custom.dto';
+import { AuthHeaderRequestDto } from './dto/request/auth-header.request.dto';
+import { RegisterRequestDto } from './dto/request/register.request.dto';
+import { VerifyResponseDto } from './dto/response/verify.response.dto';
+import { UserResponseDto } from '#user/dto/response/user.response.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -25,8 +25,8 @@ export class AuthController {
   @UseGuards(FirebaseAuthGuard)
   @UsePipes(ValidationPipe)
   verify(
-    @RequestHeader(AuthHeaderDto) authHeaderDto: AuthHeaderDto,
-  ): Promise<VerifyDto> {
+    @RequestHeader(AuthHeaderRequestDto) authHeaderDto: AuthHeaderRequestDto,
+  ): Promise<VerifyResponseDto> {
     return this.authService.verify(authHeaderDto);
   }
 
@@ -34,26 +34,18 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @UsePipes(ValidationPipe)
   verifyCustom(
-    @RequestHeader(AuthHeaderDto) authHeaderDto: AuthHeaderDto,
-  ): Promise<VerifyCustomDto> {
+    @RequestHeader(AuthHeaderRequestDto) authHeaderDto: AuthHeaderRequestDto,
+  ): Promise<UserResponseDto> {
     return this.authService.verifyCustom(authHeaderDto);
   }
 
   @Post('/register')
-  @UseGuards(FirebaseAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @UsePipes(ValidationPipe)
   register(
-    @RequestHeader(AuthHeaderDto) authHeaderDto: AuthHeaderDto,
-  ): Promise<boolean> {
-    return this.authService.register(authHeaderDto);
-  }
-
-  @Delete('/withdraw')
-  @UseGuards(FirebaseAuthGuard)
-  @UsePipes(ValidationPipe)
-  withdraw(
-    @RequestHeader(AuthHeaderDto) authHeaderDto: AuthHeaderDto,
-  ): Promise<boolean> {
-    return this.authService.withdraw(authHeaderDto);
+    @RequestHeader(AuthHeaderRequestDto) authHeaderDto: AuthHeaderRequestDto,
+    @Body() registerDto: RegisterRequestDto,
+  ): Promise<UserResponseDto> {
+    return this.authService.register(authHeaderDto, registerDto);
   }
 }

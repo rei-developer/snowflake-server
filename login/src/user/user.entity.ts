@@ -5,7 +5,6 @@ import {
   Column,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { AuthType } from '#auth/auth.model';
 
 @Entity({ name: 'Users' })
 @Unique(['uid'])
@@ -14,13 +13,13 @@ export class User extends BaseEntity {
   id: number;
 
   @Column()
-  type: AuthType;
-
-  @Column()
   uid: string;
 
   @Column()
-  email: string;
+  name: string;
+
+  @Column()
+  sex: number;
 
   @Column()
   created: Date;

@@ -1,13 +1,12 @@
-import { Injectable, ForbiddenException, Inject } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { ForbiddenException, Inject, Injectable } from '@nestjs/common';
 import { FirebaseAuthStrategy } from '#firebase/firebase-auth.strategy';
 import { AuthStrategy } from './auth.strategy';
 import { JwtService } from '@nestjs/jwt';
-import { UserRepository } from '#user/user.repository';
 import { UserService } from '#user/user.service';
-import { AuthHeaderDto } from './dto/request/auth-header.dto';
-import { VerifyDto } from './dto/response/verify.dto';
-import { VerifyCustomDto } from './dto/response/verify-custom.dto';
+import { AuthHeaderRequestDto } from './dto/request/auth-header.request.dto';
+import { VerifyResponseDto } from './dto/response/verify.response.dto';
+import { RegisterRequestDto } from './dto/request/register.request.dto';
+import { UserResponseDto } from '#user/dto/response/user.response.dto';
 import { ExceptionErrorMessage } from '#common/const/exception-error-message.const';
 
 @Injectable()
@@ -16,13 +15,13 @@ export class AuthService {
     private readonly firebaseAuthStrategy: FirebaseAuthStrategy,
     private readonly authStrategy: AuthStrategy,
     private readonly jwtService: JwtService,
-    @InjectRepository(UserRepository)
-    private readonly userRepository: UserRepository,
     @Inject(UserService)
     private readonly userService: UserService,
   ) {}
 
-  async verify({ authModel: { idToken } }: AuthHeaderDto): Promise<VerifyDto> {
+  async verify({
+    authModel: { idToken },
+  }: AuthHeaderRequestDto): Promise<VerifyResponseDto> {
     try {
       const { uid } = await this.firebaseAuthStrategy.validate(idToken);
       const customToken = this.jwtService.sign({ uid });
@@ -34,39 +33,20 @@ export class AuthService {
 
   async verifyCustom({
     authModel: { idToken: token },
-  }: AuthHeaderDto): Promise<VerifyCustomDto> {
+  }: AuthHeaderRequestDto): Promise<UserResponseDto> {
     const { uid } = await this.authStrategy.validate(token);
-    const user = await this.userRepository.readUserByUId(uid);
-    return new VerifyCustomDto(uid, !!user);
+    return await this.userService.fetchUser(uid);
   }
 
-  async register({
-    authModel: { authType: type, idToken },
-  }: AuthHeaderDto): Promise<boolean> {
-    const { uid, email } = await this.firebaseAuthStrategy.validate(idToken);
-    const user = await this.userRepository.readUserByUId(uid);
-    const userModel = {
-      uid,
-      type,
-      email,
-    };
-    return user
-      ? await this.userService.patchUser(uid, userModel)
-      : await this.userService.addUser(userModel);
-  }
-
-  async withdraw({
-    authModel: { idToken: token },
-  }: AuthHeaderDto): Promise<boolean> {
-    try {
-      const { uid } = await this.authStrategy.validate(token);
-      if (!uid) {
-        return false;
-      }
-      const { id } = await this.userRepository.readUserByUId(uid);
-      return await this.userRepository.deleteUser(id);
-    } catch (err) {
-      throw new ForbiddenException(ExceptionErrorMessage.DOES_NOT_EXIST);
-    }
+  async register(
+    { authModel: { idToken: token } }: AuthHeaderRequestDto,
+    { name }: RegisterRequestDto,
+  ): Promise<UserResponseDto> {
+    const { uid } = await this.authStrategy.validate(token);
+    const user = await this.userService.fetchUser(uid);
+    if (user.user) return user;
+    await this.userService.addUser({ uid, name });
+    console.log('유저 생성 완료입니다');
+    return await this.userService.fetchUser(uid);
   }
 }
