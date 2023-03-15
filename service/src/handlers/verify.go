@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"net"
 	"strconv"
 	"sync"
@@ -51,15 +50,13 @@ func HandleLoginVerification(
 			Index: *nextUserIndex,
 			ID:    uint(userId),
 		},
-		Type:  "apple",
-		UID:   "dddddd",
-		Email: "지랄하네",
-		Conn:  conn,
+		UID:  "dddddd",
+		Conn: conn,
 	}
-	if err := user.UpsertUser(newUser); err != nil {
-		fmt.Printf("Failed to create user: %v", err)
-		return false
-	}
+	//if err := user.UpsertUser(newUser); err != nil {
+	//	fmt.Printf("Failed to create user: %v", err)
+	//	return false
+	//}
 
 	*nextUserIndex++
 	users[newUser.Index] = newUser

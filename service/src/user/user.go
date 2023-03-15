@@ -8,10 +8,10 @@ import (
 
 type User struct {
 	common.Model
-	Type  string   `json:"type"`
-	UID   string   `json:"uid"`
-	Email string   `json:"email"`
-	Conn  net.Conn `gorm:"-"`
+	UID  string   `json:"uid"`
+	Name string   `json:"name"`
+	Sex  uint     `json:"sex"`
+	Conn net.Conn `gorm:"-"`
 }
 
 const (
