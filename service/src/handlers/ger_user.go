@@ -26,5 +26,5 @@ func HandleGetUserByID(payload []byte, users map[uint32]*user.User, outgoing cha
 	}
 
 	// send the user data
-	response.SendSuccessResponse(outgoing, fmt.Sprintf("User %d found with email %s", u.ID, u.Email))
+	response.SendSuccessResponse(outgoing, fmt.Sprintf("User %d found with name %s", u.ID, u.Name))
 }
