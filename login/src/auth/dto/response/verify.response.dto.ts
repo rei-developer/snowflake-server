@@ -1,9 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { UidResponseDto } from '#common/dto/response/uid.response.dto';
 
-export class VerifyResponseDto {
+export class VerifyResponseDto extends UidResponseDto {
   @ApiProperty()
-  uid: string;
-
-  @ApiProperty()
-  customToken: string;
+  readonly customToken: string;
 }

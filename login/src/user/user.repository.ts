@@ -5,13 +5,13 @@ import { UserModel } from './user.model';
 
 @CustomRepository(User)
 export class UserRepository extends Repository<User> {
-  async createUser(userModel: UserModel): Promise<number | boolean> {
+  async createUser(userModel: UserModel): Promise<number> {
     try {
       const user = this.create(userModel);
       await this.save(user);
       return user.id;
     } catch (err) {
-      return false;
+      return 0;
     }
   }
 

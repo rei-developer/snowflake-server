@@ -22,6 +22,9 @@ export class User extends BaseEntity {
   sex: number;
 
   @Column()
+  nation: number;
+
+  @Column()
   created: Date;
 
   @Column()

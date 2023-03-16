@@ -15,7 +15,7 @@ export class UserService {
     return await this.userRepository.readUserByUId(uid);
   }
 
-  async addUser(userModel: UserModel): Promise<number | boolean> {
+  async addUser(userModel: UserModel): Promise<number> {
     return await this.userRepository.createUser(userModel);
   }
 }
