@@ -1,6 +1,6 @@
 import { IsString } from 'class-validator';
 
-export class LangDto {
+export class LangRequestDto {
   @IsString()
   lang?: string = 'en';
 }

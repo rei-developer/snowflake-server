@@ -5,7 +5,6 @@ import {
   ValidationPipe,
   Get,
   Post,
-  Delete,
   Body,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -15,7 +14,7 @@ import { RequestHeader } from '#common/decorator/request-header.decorator';
 import { AuthHeaderRequestDto } from './dto/request/auth-header.request.dto';
 import { RegisterRequestDto } from './dto/request/register.request.dto';
 import { VerifyResponseDto } from './dto/response/verify.response.dto';
-import { UserResponseDto } from '#user/dto/response/user.response.dto';
+import { SignInResultResponseDto } from './dto/response/common/sign-in-result.response.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -35,7 +34,7 @@ export class AuthController {
   @UsePipes(ValidationPipe)
   verifyCustom(
     @RequestHeader(AuthHeaderRequestDto) authHeaderDto: AuthHeaderRequestDto,
-  ): Promise<UserResponseDto> {
+  ): Promise<SignInResultResponseDto> {
     return this.authService.verifyCustom(authHeaderDto);
   }
 
@@ -45,7 +44,7 @@ export class AuthController {
   register(
     @RequestHeader(AuthHeaderRequestDto) authHeaderDto: AuthHeaderRequestDto,
     @Body() registerDto: RegisterRequestDto,
-  ): Promise<UserResponseDto> {
+  ): Promise<SignInResultResponseDto> {
     return this.authService.register(authHeaderDto, registerDto);
   }
 }

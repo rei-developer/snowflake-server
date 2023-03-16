@@ -1,7 +1,7 @@
 import { IsNotEmpty, IsNumber } from 'class-validator';
 
-export class GetWordsByDicIdDto {
+export class IdRequestDto {
   @IsNotEmpty()
   @IsNumber()
-  dicId: number;
+  id: number;
 }

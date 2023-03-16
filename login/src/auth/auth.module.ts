@@ -4,6 +4,7 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmExModule } from '#typeorm-ex/typeorm-ex.module';
 import { UserRepository } from '#user/user.repository';
+import { LoverModule } from '#lover/lover.module';
 import { UserModule } from '#user/user.module';
 import { AuthStrategy } from './auth.strategy';
 import { AuthController } from './auth.controller';
@@ -24,6 +25,7 @@ const {
       signOptions: { expiresIn },
     }),
     TypeOrmExModule.forCustomRepository([UserRepository]),
+    LoverModule,
     UserModule,
   ],
   exports: [PassportModule, AuthStrategy],

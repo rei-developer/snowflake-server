@@ -2,9 +2,7 @@ import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from '#auth/auth.module';
-import { DictionaryModule } from '#dictionary/dictionary.module';
 import { UserModule } from '#user/user.module';
-import { WordModule } from '#word/word.module';
 import { AppController } from '#app.controller';
 import { AppService } from '#app.service';
 import { LoggerMiddleware } from '#common/middleware/logger.middleware';
@@ -24,9 +22,7 @@ const {
     }),
     TypeOrmModule.forRoot(typeORMConfig),
     AuthModule,
-    DictionaryModule,
     UserModule,
-    WordModule,
   ],
   controllers: [AppController],
   providers: [

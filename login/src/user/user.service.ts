@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserRepository } from './user.repository';
-import { UserResponseDto } from './dto/response/user.response.dto';
+import { User } from './user.entity';
 import { UserModel } from './user.model';
 
 @Injectable()
@@ -11,17 +11,11 @@ export class UserService {
     private readonly userRepository: UserRepository,
   ) {}
 
-  async fetchUser(uid: string): Promise<UserResponseDto> {
-    const user = await this.userRepository.readUserByUId(uid);
-    console.log('fetched user : ', user);
-    return new UserResponseDto(user);
+  async fetchUser(uid: string): Promise<User> {
+    return await this.userRepository.readUserByUId(uid);
   }
 
-  async addUser(userModel: UserModel): Promise<boolean> {
+  async addUser(userModel: UserModel): Promise<number | boolean> {
     return await this.userRepository.createUser(userModel);
-  }
-
-  async patchUser(uid: string, userModel: UserModel): Promise<boolean> {
-    return await this.userRepository.updateUserByUId(uid, userModel);
   }
 }
