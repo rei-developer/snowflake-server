@@ -12,6 +12,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 )
 
@@ -32,6 +33,8 @@ func init() {
 }
 
 func main() {
+	regexp.MustCompile("")
+
 	config, err := loadConfig()
 	if err != nil {
 		panic(err)

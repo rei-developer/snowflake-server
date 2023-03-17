@@ -2,15 +2,12 @@ package handlers
 
 import (
 	"encoding/json"
-	"net"
-	"strconv"
-	"sync"
-
 	"github.com/snowflake-server/src/common"
 	"github.com/snowflake-server/src/user"
+	"net"
 )
 
-type LoginVerificationRequest struct {
+type requestLoginVerification struct {
 	Token string `json:"token"`
 }
 
@@ -19,12 +16,8 @@ func HandleLoginVerification(
 	payload []byte,
 	users map[uint32]*user.User,
 	nextUserIndex *uint32,
-	mu *sync.Mutex,
 ) bool {
-	defer mu.Unlock()
-	mu.Lock()
-
-	var req LoginVerificationRequest
+	var req requestLoginVerification
 	if err := json.Unmarshal(payload, &req); err != nil {
 		return false
 	}
@@ -35,12 +28,17 @@ func HandleLoginVerification(
 		}
 	}
 
+	println(req.Token)
+
 	claims, err := common.VerifyToken(req.Token)
 	if err != nil || claims == nil {
+		println(err.Error())
 		return false
 	}
 
-	userId, err := strconv.ParseUint(claims.Id, 10, 32)
+	println(claims.Id)
+
+	userModel, err := user.GetUserByUID(claims.Id)
 	if err != nil {
 		return false
 	}
@@ -48,18 +46,24 @@ func HandleLoginVerification(
 	newUser := &user.User{
 		Model: common.Model{
 			Index: *nextUserIndex,
-			ID:    uint(userId),
+			ID:    userModel.ID,
 		},
-		UID:  "dddddd",
-		Conn: conn,
+		UID:    userModel.UID,
+		Name:   userModel.Name,
+		Sex:    userModel.Sex,
+		Nation: userModel.Nation,
+		Conn:   conn,
 	}
-	//if err := user.UpsertUser(newUser); err != nil {
-	//	fmt.Printf("Failed to create user: %v", err)
-	//	return false
-	//}
 
 	*nextUserIndex++
 	users[newUser.Index] = newUser
+
+	println(newUser.Index)
+	println(newUser.ID)
+	println(newUser.UID)
+	println(newUser.Name)
+	println(newUser.Sex)
+	println(newUser.Nation)
 
 	return true
 }
