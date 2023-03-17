@@ -1,3 +1,5 @@
+import * as fs from 'fs';
+import * as yaml from 'yaml';
 import { Module } from '@nestjs/common';
 import { FirebaseAuthModule } from '#firebase/firebase-auth.module';
 import { PassportModule } from '@nestjs/passport';
@@ -9,19 +11,17 @@ import { UserModule } from '#user/user.module';
 import { AuthStrategy } from './auth.strategy';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { appConfig } from '#configs/app.config';
-import { secretKeyConfig } from '#configs/secret-key.config';
 
-const {
-  jwt: { defaultStrategy, expiresIn },
-} = appConfig;
+const { defaultStrategy, secretKey, expiresIn } = yaml.parse(
+  fs.readFileSync('config.yaml', 'utf8'),
+).jwt;
 
 @Module({
   imports: [
     FirebaseAuthModule,
-    PassportModule.register({ defaultStrategy: defaultStrategy }),
+    PassportModule.register({ defaultStrategy }),
     JwtModule.register({
-      secret: secretKeyConfig.secretKey,
+      secret: secretKey,
       signOptions: { expiresIn },
     }),
     TypeOrmExModule.forCustomRepository([UserRepository]),

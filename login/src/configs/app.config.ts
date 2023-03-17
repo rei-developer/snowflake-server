@@ -16,10 +16,6 @@ export const appConfig = {
     ttl: 30,
     limit: 100,
   },
-  jwt: {
-    defaultStrategy: 'snowflake',
-    expiresIn: '7d',
-  },
   log: {
     level: LogLevel.DEBUG,
     dir: __dirname + '/../../logs',

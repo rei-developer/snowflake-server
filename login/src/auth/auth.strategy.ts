@@ -1,14 +1,14 @@
+import * as fs from 'fs';
+import * as yaml from 'yaml';
 import { Injectable, Inject } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy, ExtractJwt } from 'passport-firebase-jwt';
 import { JwtService } from '@nestjs/jwt';
 import { CustomAuthScheme } from './auth.model';
-import { appConfig } from '#configs/app.config';
-import { secretKeyConfig } from '#configs/secret-key.config';
 
-const {
-  jwt: { defaultStrategy },
-} = appConfig;
+const { defaultStrategy, secretKey } = yaml.parse(
+  fs.readFileSync('config.yaml', 'utf8'),
+).jwt;
 
 @Injectable()
 export class AuthStrategy extends PassportStrategy(Strategy, defaultStrategy) {
@@ -17,7 +17,7 @@ export class AuthStrategy extends PassportStrategy(Strategy, defaultStrategy) {
     private readonly jwtService: JwtService,
   ) {
     super({
-      secretOrKey: secretKeyConfig.secretKey,
+      secretOrKey: secretKey,
       jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme(CustomAuthScheme),
     });
   }

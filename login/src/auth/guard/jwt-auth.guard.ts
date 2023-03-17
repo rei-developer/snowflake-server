@@ -1,10 +1,11 @@
+import * as fs from 'fs';
+import * as yaml from 'yaml';
 import { Injectable } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { appConfig } from '#configs/app.config';
 
-const {
-  jwt: { defaultStrategy },
-} = appConfig;
+const { defaultStrategy } = yaml.parse(
+  fs.readFileSync('config.yaml', 'utf8'),
+).jwt;
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard(defaultStrategy) {}

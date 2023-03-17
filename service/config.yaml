@@ -8,8 +8,9 @@ service:
   port: ":10004"
 
 jwt:
-  defaultStrategy: "custom-auth"
-  secretKey: "apple"
+  defaultStrategy: "snowflake"
+  secretKey: "8FFAA81BAAFDBAE5E02F71708D252B6D122544F469B2A6498023BFD2C01273A276286D7E8B2E34B4D13AFF85323966BBA6757C99ED9DA48FB66371370E8E14F6"
+  expiresIn: 7d
 
 db:
   host: localhost

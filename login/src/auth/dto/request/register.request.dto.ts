@@ -10,7 +10,7 @@ import {
 export class RegisterRequestDto {
   @IsNotEmpty()
   @IsString()
-  @Matches(/^([A-Za-z]{2,6}|[가-힣]{2,6})$/)
+  @Matches(/^([A-Za-z]{2,12}|[가-힣]{2,6})$/)
   readonly name: string;
 
   @IsInt()

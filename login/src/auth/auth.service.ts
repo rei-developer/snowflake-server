@@ -27,7 +27,7 @@ export class AuthService {
   }: AuthHeaderRequestDto): Promise<VerifyResponseDto> {
     try {
       const { uid } = await this.firebaseAuthStrategy.validate(idToken);
-      const customToken = this.jwtService.sign({ uid });
+      const customToken = this.jwtService.sign({ jti: uid });
       return { uid, customToken };
     } catch (err) {
       throw new ForbiddenException(ExceptionErrorMessage.DOES_NOT_EXIST);
