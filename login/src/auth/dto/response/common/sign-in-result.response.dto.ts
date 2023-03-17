@@ -1,14 +1,17 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { UidResponseDto } from '#common/dto/response/uid.response.dto';
 
-export class SignInResultResponseDto {
-  constructor(hasUser: boolean, hasLover: boolean) {
+export class SignInResultResponseDto extends UidResponseDto {
+  constructor(uid: string, hasUser: boolean, hasLover: boolean) {
+    super();
+    this.uid = uid;
     this.hasUser = hasUser;
     this.hasLover = hasLover;
   }
 
   @ApiProperty()
-  hasUser: boolean;
+  readonly hasUser: boolean;
 
   @ApiProperty()
-  hasLover: boolean;
+  readonly hasLover: boolean;
 }

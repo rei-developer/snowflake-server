@@ -10,5 +10,5 @@ export class AuthHeaderRequestDto {
       idToken,
     };
   })
-  authModel: AuthModel;
+  readonly authModel: AuthModel;
 }

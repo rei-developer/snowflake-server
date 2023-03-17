@@ -39,22 +39,22 @@ export class AuthService {
   }: AuthHeaderRequestDto): Promise<SignInResultResponseDto> {
     const { uid } = await this.authStrategy.validate(token);
     const user = await this.userService.fetchUser(uid);
-    return new SignInResultResponseDto(!!user, false);
+    return new SignInResultResponseDto(uid, !!user, false);
   }
 
   async register(
     { authModel: { idToken: token } }: AuthHeaderRequestDto,
-    { name }: RegisterRequestDto,
+    { name, sex, nation }: RegisterRequestDto,
   ): Promise<SignInResultResponseDto> {
     const { uid } = await this.authStrategy.validate(token);
     const user = await this.userService.fetchUser(uid);
     const userId = user
       ? user.id
-      : await this.userService.addUser({ uid, name });
-    if (!userId) {
+      : await this.userService.addUser({ uid, name, sex, nation });
+    if (userId < 1) {
       throw new ForbiddenException(ExceptionErrorMessage.DOES_NOT_EXIST);
     }
-    const lover = await this.loverService.fetchLoverByUserId(user.id);
-    return new SignInResultResponseDto(!!user, !!lover);
+    const lover = await this.loverService.fetchLoverByUserId(userId);
+    return new SignInResultResponseDto(uid, userId > 0, !!lover);
   }
 }
