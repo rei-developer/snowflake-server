@@ -7,12 +7,6 @@ import (
 	"net"
 )
 
-const (
-	loginVerification MessageType = iota
-	hello
-	getUserByID
-)
-
 type MessageType uint32
 
 type Message struct {
@@ -51,19 +45,5 @@ func (s *Server) readIncomingMessages(conn net.Conn, incoming chan<- Message, ou
 		}
 
 		incoming <- Message{Type: messageType, Payload: payload}
-	}
-}
-
-func (s *Server) writeOutgoingMessages(conn net.Conn, outgoing <-chan []byte) {
-	for data := range outgoing {
-		_, err := conn.Write(data)
-		if err != nil {
-			if err == io.EOF {
-				fmt.Println("Connection closed by client")
-			} else {
-				fmt.Println("Error writing data:", err)
-			}
-			return
-		}
 	}
 }

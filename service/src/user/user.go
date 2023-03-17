@@ -8,10 +8,11 @@ import (
 
 type User struct {
 	common.Model
-	UID  string   `json:"uid"`
-	Name string   `json:"name"`
-	Sex  uint     `json:"sex"`
-	Conn net.Conn `gorm:"-"`
+	UID    string   `json:"uid"`
+	Name   string   `json:"name"`
+	Sex    uint     `json:"sex"`
+	Nation uint     `json:"nation"`
+	Conn   net.Conn `gorm:"-"`
 }
 
 const (
@@ -21,6 +22,15 @@ const (
 func GetUserByID(id uint) (*User, error) {
 	var user User
 	if err := user.GetByID(id, userPrefix, &user); err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
+
+func GetUserByUID(uid string) (*User, error) {
+	var user User
+	err := user.GetByColumn("uid", uid, userPrefix, &user)
+	if err != nil {
 		return nil, err
 	}
 	return &user, nil
