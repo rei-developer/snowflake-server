@@ -14,12 +14,12 @@ export class RegisterRequestDto {
   readonly name: string;
 
   @IsInt()
-  @Min(0)
-  @Max(1)
+  @Min(1)
+  @Max(2)
   readonly sex: number;
 
   @IsInt()
-  @Min(0)
-  @Max(19)
+  @Min(1)
+  @Max(20)
   readonly nation: number;
 }

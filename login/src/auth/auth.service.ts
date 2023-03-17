@@ -44,13 +44,13 @@ export class AuthService {
 
   async register(
     { authModel: { idToken: token } }: AuthHeaderRequestDto,
-    { name }: RegisterRequestDto,
+    { name, sex, nation }: RegisterRequestDto,
   ): Promise<SignInResultResponseDto> {
     const { uid } = await this.authStrategy.validate(token);
     const user = await this.userService.fetchUser(uid);
     const userId = user
       ? user.id
-      : await this.userService.addUser({ uid, name });
+      : await this.userService.addUser({ uid, name, sex, nation });
     if (userId < 1) {
       throw new ForbiddenException(ExceptionErrorMessage.DOES_NOT_EXIST);
     }
