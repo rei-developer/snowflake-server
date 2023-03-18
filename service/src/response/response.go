@@ -1,23 +1,38 @@
 package response
 
-import "encoding/binary"
+import (
+	"bytes"
+	"encoding/binary"
+	"encoding/json"
+)
 
-func SendResponse(outgoing chan []byte, id uint32, message string) {
-	response := []byte(message)
-	outgoing <- append([]byte{0, 0, 0, byte(id)}, uint32ToBytes(uint32(len(response)))...)
-	outgoing <- response
+type Header struct {
+	ID       uint32
+	DataSize uint32
 }
 
-func SendSuccessResponse(outgoing chan []byte, message string) {
-	SendResponse(outgoing, 1, message)
-}
+func SendMessage(outgoing chan []byte, id uint32, jsonData map[string]interface{}) {
+	jsonBytes, err := json.Marshal(jsonData)
+	if err != nil {
+		panic(err)
+	}
 
-func SendErrorResponse(outgoing chan []byte, message string) {
-	SendResponse(outgoing, 2, message)
-}
+	header := Header{
+		ID:       id,
+		DataSize: uint32(len(jsonBytes)),
+	}
 
-func uint32ToBytes(n uint32) []byte {
-	b := make([]byte, 4)
-	binary.BigEndian.PutUint32(b, n)
-	return b
+	headerBytes := new(bytes.Buffer)
+	err = binary.Write(headerBytes, binary.BigEndian, header)
+	if err != nil {
+		panic(err)
+	}
+
+	packetSize := len(headerBytes.Bytes()) + len(jsonBytes) + 4
+	packetBytes := make([]byte, packetSize)
+	binary.BigEndian.PutUint32(packetBytes[:4], uint32(packetSize))
+	binary.BigEndian.PutUint32(packetBytes[4:8], id)
+	copy(packetBytes[8:], jsonBytes)
+
+	outgoing <- packetBytes
 }

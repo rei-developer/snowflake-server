@@ -3,11 +3,11 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/snowflake-server/src/novelai"
-	"net"
 	"strings"
 
 	"github.com/snowflake-server/src/common"
+	"github.com/snowflake-server/src/novelai"
+	"github.com/snowflake-server/src/response"
 )
 
 var validHairColorOptions = []string{
@@ -53,7 +53,7 @@ func (r *requestDrawFirstLover) Validate() error {
 	return nil
 }
 
-func HandleDrawFirstLover(conn net.Conn, payload []byte) {
+func HandleDrawFirstLover(payload []byte, outgoing chan []byte) {
 	var req requestDrawFirstLover
 	if err := json.Unmarshal(payload, &req); err != nil {
 		fmt.Printf("unmarshalling failed: %v\n", err)
@@ -106,4 +106,6 @@ func HandleDrawFirstLover(conn net.Conn, payload []byte) {
 	hash := novelai.GenerateImage(test)
 
 	fmt.Println(hash)
+
+	response.SendMessage(outgoing, 134, map[string]interface{}{"hash": hash})
 }

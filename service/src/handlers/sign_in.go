@@ -28,15 +28,11 @@ func HandleLoginVerification(
 		}
 	}
 
-	println(req.Token)
-
 	claims, err := common.VerifyToken(req.Token)
 	if err != nil || claims == nil {
 		println(err.Error())
 		return false
 	}
-
-	println(claims.Id)
 
 	userModel, err := user.GetUserByUID(claims.Id)
 	if err != nil {
@@ -57,13 +53,6 @@ func HandleLoginVerification(
 
 	*nextUserIndex++
 	users[newUser.Index] = newUser
-
-	println(newUser.Index)
-	println(newUser.ID)
-	println(newUser.UID)
-	println(newUser.Name)
-	println(newUser.Sex)
-	println(newUser.Nation)
 
 	return true
 }
