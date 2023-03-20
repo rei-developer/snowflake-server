@@ -72,21 +72,6 @@ func HandleDrawFirstLover(payload []byte, outgoing chan []byte) {
 		return
 	}
 
-	fmt.Println("Name:", req.Name)
-	fmt.Println("Race:", req.Race)
-	fmt.Println("Sex:", req.Sex)
-	fmt.Println("Age:", req.Age)
-	fmt.Println("hairColor:", req.HairColor)
-	fmt.Println("hairShape:", req.HairShape)
-	fmt.Println("hairStyle:", req.HairStyle)
-	fmt.Println("face:", req.Face)
-	fmt.Println("eyes:", req.Eyes)
-	fmt.Println("nose:", req.Nose)
-	fmt.Println("mouth:", req.Mouth)
-	fmt.Println("ears:", req.Ears)
-	fmt.Println("body:", req.Body)
-	fmt.Println("breast:", req.Breast)
-
 	values := []string{
 		"1 girl",
 		req.HairColor,
@@ -99,13 +84,12 @@ func HandleDrawFirstLover(payload []byte, outgoing chan []byte) {
 		req.Ears,
 		req.Body,
 		req.Breast,
+		"black school_uniform, white blouse, red ribbon, forest",
 	}
 
-	test := strings.Join(values, ", ")
+	input := strings.Join(values, ", ")
 
-	hash := novelai.GenerateImage(test)
-
-	fmt.Println(hash)
+	hash := novelai.GenerateImage(input)
 
 	response.SendMessage(outgoing, 134, map[string]interface{}{"hash": hash})
 }

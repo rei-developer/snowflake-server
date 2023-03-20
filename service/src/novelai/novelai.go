@@ -51,7 +51,6 @@ func GenerateImage(input string) string {
 		return ""
 	}
 	if image.ID > 0 {
-		println("이미 있군요...")
 		return image.Hash
 	}
 

@@ -5,6 +5,7 @@ import (
 	"io"
 	"net"
 	"sync"
+	"time"
 
 	"github.com/snowflake-server/src/handlers"
 	"github.com/snowflake-server/src/user"
@@ -47,6 +48,20 @@ func (s *Server) Stop() error {
 }
 
 func (s *Server) handleConnection(conn net.Conn) {
+	tcpConn, ok := conn.(*net.TCPConn)
+	if !ok {
+		fmt.Println("Error converting conn to TCPConn")
+		return
+	}
+	if err := tcpConn.SetKeepAlive(true); err != nil {
+		fmt.Printf("Error enabling keep-alive: %v\n", err)
+		return
+	}
+	if err := tcpConn.SetKeepAlivePeriod(5 * time.Minute); err != nil {
+		fmt.Printf("Error setting keep-alive period: %v\n", err)
+		return
+	}
+
 	defer func(conn net.Conn) {
 		if err := conn.Close(); err != nil {
 			fmt.Printf("Error closing connection: %v\n", err)
