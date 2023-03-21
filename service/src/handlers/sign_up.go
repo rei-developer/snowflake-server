@@ -91,5 +91,5 @@ func HandleDrawFirstLover(payload []byte, outgoing chan []byte) {
 
 	hash := novelai.GenerateImage(input)
 
-	response.SendMessage(outgoing, 134, map[string]interface{}{"hash": hash})
+	response.SendMessage(outgoing, 1, map[string]interface{}{"hash": hash})
 }
