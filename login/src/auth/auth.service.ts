@@ -20,7 +20,8 @@ export class AuthService {
     private readonly loverService: LoverService,
     @Inject(UserService)
     private readonly userService: UserService,
-  ) {}
+  ) {
+  }
 
   async verify({
     authModel: { idToken },
@@ -38,9 +39,7 @@ export class AuthService {
     authModel: { idToken: token },
   }: AuthHeaderRequestDto): Promise<SignInResultResponseDto> {
     const { jti: uid } = await this.authStrategy.validate(token);
-    console.log(uid);
     const user = await this.userService.fetchUser(uid);
-    console.log(user);
     return new SignInResultResponseDto(uid, !!user, false);
   }
 
