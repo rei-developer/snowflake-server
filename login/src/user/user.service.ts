@@ -15,6 +15,10 @@ export class UserService {
     return await this.userRepository.readUserByUId(uid);
   }
 
+  async fetchUserByName(name: string): Promise<User> {
+    return await this.userRepository.readUserByName(name);
+  }
+
   async addUser(userModel: UserModel): Promise<number> {
     return await this.userRepository.createUser(userModel);
   }

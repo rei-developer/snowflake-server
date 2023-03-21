@@ -37,8 +37,10 @@ export class AuthService {
   async verifyCustom({
     authModel: { idToken: token },
   }: AuthHeaderRequestDto): Promise<SignInResultResponseDto> {
-    const { uid } = await this.authStrategy.validate(token);
+    const { jti: uid } = await this.authStrategy.validate(token);
+    console.log(uid);
     const user = await this.userService.fetchUser(uid);
+    console.log(user);
     return new SignInResultResponseDto(uid, !!user, false);
   }
 
@@ -46,8 +48,11 @@ export class AuthService {
     { authModel: { idToken: token } }: AuthHeaderRequestDto,
     { name, sex, nation }: RegisterRequestDto,
   ): Promise<SignInResultResponseDto> {
-    const { uid } = await this.authStrategy.validate(token);
+    const { jti: uid } = await this.authStrategy.validate(token);
     const user = await this.userService.fetchUser(uid);
+    if (!user && (await this.userService.fetchUserByName(name))) {
+      throw new ForbiddenException(ExceptionErrorMessage.ALREADY_EXIST);
+    }
     const userId = user
       ? user.id
       : await this.userService.addUser({ uid, name, sex, nation });

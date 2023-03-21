@@ -22,11 +22,11 @@ export class AuthStrategy extends PassportStrategy(Strategy, defaultStrategy) {
     });
   }
 
-  async validate(token: string): Promise<{ uid: string | null }> {
+  async validate(token: string): Promise<{ jti: string | null }> {
     try {
       return await this.jwtService.verifyAsync(token);
     } catch (_) {
-      return { uid: null };
+      return { jti: null };
     }
   }
 }

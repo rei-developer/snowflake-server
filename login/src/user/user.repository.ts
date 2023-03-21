@@ -18,4 +18,8 @@ export class UserRepository extends Repository<User> {
   async readUserByUId(uid: string): Promise<User> {
     return await this.findOneBy({ uid });
   }
+
+  async readUserByName(name: string): Promise<User> {
+    return await this.findOneBy({ name });
+  }
 }
