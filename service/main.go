@@ -13,6 +13,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"runtime"
 	"strings"
 )
 
@@ -33,6 +34,7 @@ func init() {
 }
 
 func main() {
+	runtime.GC()
 	regexp.MustCompile("")
 
 	config, err := loadConfig()
