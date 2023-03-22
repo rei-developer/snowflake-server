@@ -20,8 +20,7 @@ export class AuthService {
     private readonly loverService: LoverService,
     @Inject(UserService)
     private readonly userService: UserService,
-  ) {
-  }
+  ) {}
 
   async verify({
     authModel: { idToken },
